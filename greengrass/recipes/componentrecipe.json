@@ -1,0 +1,33 @@
+{
+    "RecipeFormatVersion": "2020-01-25",
+    "ComponentName": "pqiinference",
+    "ComponentVersion": "1.0.0",
+    "ComponentType": "aws.greengrass.generic",
+    "ComponentDescription": "Lookout for Vision Edge Agent for PQI Demo",
+    "ComponentPublisher": "Dolf",
+    "ComponentDependencies": {},
+    "Manifests": [
+        {
+            "Platform": {
+                "os": "linux"
+            },
+            "Lifecycle": {
+                "install": "pip3 install grpcio grpcio-tools protobuf",
+                "run": {
+                    "script": "echo test deployment finished"
+                }
+            },
+            "Artifacts": [
+                {
+                    "Uri": "s3://pqicomponentartifacts/test_inference.py"
+                },
+                {
+                    "Uri": "s3://pqicomponentartifacts/edge_agent_pb2_grpc.py"
+                },
+                {
+                    "Uri": "s3://pqicomponentartifacts/edge_agent_pb2.py"
+                }
+            ]
+        }
+    ]
+}

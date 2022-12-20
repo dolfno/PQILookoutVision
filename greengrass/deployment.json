@@ -1,0 +1,25 @@
+{
+    "targetArn": "arn:aws:iot:eu-west-1:262345918484:thinggroup/PQICoreGroup",
+    "deploymentName": "Deployment for PQICoreGroup",
+    "components": {
+        "aws.greengrass.Cli": {
+            "componentVersion": "2.9.1"
+        },
+        "aws.iot.lookoutvision.EdgeAgent": {
+            "componentVersion": "1.1.0"
+        },
+        "pqiinference": {
+            "componentVersion": "1.0.0"
+        }
+    },
+    "deploymentPolicies": {
+        "failureHandlingPolicy": "DO_NOTHING",
+        "componentUpdatePolicy": {
+            "timeoutInSeconds": 60,
+            "action": "NOTIFY_COMPONENTS"
+        },
+        "configurationValidationPolicy": {
+            "timeoutInSeconds": 60
+        }
+    }
+}
