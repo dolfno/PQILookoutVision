@@ -1,5 +1,4 @@
 """methods to manipulate the image"""
-
 import json
 from datetime import datetime
 
@@ -8,14 +7,21 @@ import numpy as np
 from PIL import Image
 
 
-def add_text_overlay(img, text: str):
+def add_text_overlay(img, response):
     """If anomaly show text in red otherwise in green"""
-    if text == "Anomaly":
+    anomaly = response["DetectAnomalyResult"]["IsAnomalous"]
+    confscore = response["DetectAnomalyResult"]["Confidence"]
+    if anomaly:
         color = (0, 0, 255)
+        text = "Anomaly Detected"
+        score = "Confidence score: " + str("%.4f" % confscore)
     else:
         color = (0, 255, 0)
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    img_overlay = cv2.putText(img, text, (10, 30), font, 1, color, 2, cv2.LINE_AA)
+        text = "Perfect Bottle"
+        score = "Confidence score: " + str("%.4f" % confscore)
+    font = cv2.FONT_HERSHEY_PLAIN
+    img_overlay = cv2.putText(img, text, (10, 30), font, 1.5, color, 2, cv2.LINE_AA)
+    img_overlay = cv2.putText(img, score, (10, 100), font, 1.5, color, 2, cv2.LINE_AA)
     return img_overlay
 
 
