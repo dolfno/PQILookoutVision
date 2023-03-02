@@ -7,7 +7,6 @@ from src.logger import log
 
 boto3.setup_default_session(region_name="eu-west-1")
 
-
 class LookoutClient:
     def __init__(self, project_name: str = None, model_version: int = None):
         self._client: LookoutforVisionClient = None
