@@ -1,28 +1,16 @@
 """methods to manipulate the image"""
+import json
+from datetime import datetime
+
 import cv2
-# Add response text over image with confidence score
-# def add_text_overlay(img, text:str, response):
-#     """If anomaly show text in red otherwise in green"""
-#     anomaly = response['DetectAnomalyResult']['IsAnomalous']
-#     font = cv2.FONT_HERSHEY_SIMPLEX
-#     org = (50, 50)
-#     fontScale = 1
-#     # Blue color in BGR
-#     color = (255, 0, 0)
-#     thickness = 2
-#     image = cv2.putText(img, 'OpenCV', org, font,
-#                         fontScale, color, thickness, cv2.LINE_AA)
-#     if anomaly:
-#         #text red
-#         cv2.putText(img, "Anomaly", (x, y), cv2.CV_FONT_HERSHEY_SIMPLEX, 2, 255)
-#     else:
-#         #text green
-#     return
+import numpy as np
+from PIL import Image
+
 
 def add_text_overlay(img, response):
     """If anomaly show text in red otherwise in green"""
-    anomaly = response['DetectAnomalyResult']['IsAnomalous']
-    confscore = response['DetectAnomalyResult']['Confidence']
+    anomaly = response["DetectAnomalyResult"]["IsAnomalous"]
+    confscore = response["DetectAnomalyResult"]["Confidence"]
     if anomaly:
         color = (0, 0, 255)
         text = "Anomaly Detected"
@@ -36,3 +24,16 @@ def add_text_overlay(img, response):
     img_overlay = cv2.putText(img, score, (10, 100), font, 1.5, color, 2, cv2.LINE_AA)
     return img_overlay
 
+
+def array_to_image(img) -> Image:
+    return Image.fromarray(np.uint8(img))
+
+
+def store_image_metadata(image_name, response):
+    with open(f"{image_name}.json", "w") as outfile:
+        json.dump(response, outfile)
+
+
+def store_image(image, response):
+    image.save(f"{datetime.now()}.png")
+    store_image_metadata(image, response)
