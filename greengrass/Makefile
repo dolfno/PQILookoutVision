@@ -1,7 +1,10 @@
 init_buckets:
 	aws s3api create-bucket --bucket pqicomponentartifacts --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
 
-upload_inference_script:
+init_buckets_images: #TODO SET DATE
+	aws s3api create-bucket --bucket pqicomponentartifacts/qpiimagesDATA --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
+
+upload_files_to_s3:
 	aws s3 sync ./componentartifacts/. s3://pqicomponentartifacts
 	
 create_component:

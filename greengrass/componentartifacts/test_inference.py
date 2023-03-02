@@ -1,22 +1,23 @@
 import json
 import time as t
 
-import cv2
+import edge_agent_pb2 as pb2
+# import cv2
 import grpc
+import numpy as np
 from awscrt import io, mqtt
 from awsiot import mqtt_connection_builder
-
-import edge_agent_pb2 as pb2
 from edge_agent_pb2_grpc import EdgeAgentStub
+from picamera2 import Picamera2
+from PIL import Image
 
-ENDPOINT = "a2o9waswrdjh0c-ats.iot.eu-west-1.amazonaws.com"
+ENDPOINT = "a1t2xj7x9iehh6-ats.iot.eu-west-1.amazonaws.com"
 CLIENT_ID = "PQICore"
 PATH_TO_CERTIFICATE = "/greengrass/v2/thingCert.crt"
 PATH_TO_PRIVATE_KEY = "/greengrass/v2/privKey.key"
 PATH_TO_AMAZON_ROOT_CA_1 = "/greengrass/v2/rootCA.pem"
 TOPIC = "l4v/testclient"
 MODEL_COMPONENT = "tobe"
-
 
 def detect_anomalies(img, channel):
     stub = EdgeAgentStub(channel)
@@ -31,6 +32,10 @@ def detect_anomalies(img, channel):
     print(str(response))
     return response
 
+def detect_anomalies(a, b):
+    return {
+        "detect_anomaly_result": {}
+    }
 
 def connect_mqtt():
     event_loop_group = io.EventLoopGroup(1)
@@ -72,15 +77,42 @@ def disconnect_mqtt(mqtt_connection):
 
 
 with grpc.insecure_channel("unix:///tmp/aws.iot.lookoutvision.EdgeAgent.sock") as channel:
-    mqtt_connection = connect_mqtt()
-    vid = cv2.VideoCapture(0)
-    ret, frame = vid.read()
+    picam2 = Picamera2()
+    camera_config = picam2.create_preview_configuration()
+    picam2.configure(camera_config)
+    picam2.start()
+    im = picam2.capture_array()
+    img = Image.fromarray(np.uint8(im))
+    # img.show()
 
-    response = detect_anomalies(frame, channel)
+    mqtt_connection = connect_mqtt()
+    response = detect_anomalies(img, channel)
     publish_mqtt_message(mqtt_connection, response)
     disconnect_mqtt(mqtt_connection)
 
-    # After the loop release the cap object
-    vid.release()
-    # Destroy all the windows
-    cv2.destroyAllWindows()
+
+    # # After the loop release the cap object
+    # vid.release()
+    # # Destroy all the windows
+    # cv2.destroyAllWindows()
+
+
+# def main():
+#     picam2 = Picamera2()
+#     camera_config = picam2.create_preview_configuration()
+#     picam2.configure(camera_config)
+#     picam2.start()
+#     im = picam2.capture_array()
+#     img = Image.fromarray(np.uint8(im))
+#     img.show()
+
+# if __name__ == "__main__":
+#     main()
+
+def store_image_metadata(image_name, response):
+    with open(f"{image_name}.json", "w") as outfile:
+        json.dump(response, outfile)
+
+def store_image(image, response):
+    image.save(f"{datetime.now()}.png")
+    store_image_metadata(image, response)

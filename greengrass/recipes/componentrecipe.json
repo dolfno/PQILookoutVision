@@ -1,7 +1,7 @@
 {
     "RecipeFormatVersion": "2020-01-25",
     "ComponentName": "pqiinference",
-    "ComponentVersion": "1.0.0",
+    "ComponentVersion": "1.0.1",
     "ComponentType": "aws.greengrass.generic",
     "ComponentDescription": "Lookout for Vision Edge Agent for PQI Demo",
     "ComponentPublisher": "Dolf",
@@ -12,7 +12,7 @@
                 "os": "linux"
             },
             "Lifecycle": {
-                "install": "pip3 install grpcio grpcio-tools protobuf",
+                "install": "pip3 install grpcio grpcio-tools protobuf awscrt awsiotsdk",
                 "run": {
                     "script": "echo test deployment finished"
                 }
