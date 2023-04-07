@@ -7,4 +7,5 @@ def get_picam2() -> Picamera2:
     picam = Picamera2()
     camera_config = picam.create_preview_configuration()
     picam.configure(camera_config)
+    picam.start(show_preview=True)
     return picam
