@@ -18,6 +18,12 @@ In greengrass/component artifacts
 Before running any scripts, in your terminal type:
 pip install -r requirements.txt
 Scripts:
+To gather data:
+gather_data.py: takes a picture every 3 seconds and stores it in Images/anomaly or Images/normal.
+For your anomaly samples run: python gather_data.py anomaly
+For normal samples: python gather_data.py normal
+//Train model with your data in AWS see Confluence to know how///
+To run inference:
 anomaly_picam: this script runs the main function that calls to take a picture with the picam and run inference. This is the script to run for the demo
 In the terminal: python anomaly_picam.py
 
