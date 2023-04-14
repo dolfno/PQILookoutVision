@@ -14,3 +14,13 @@ https://github.com/aws-samples/amazon-lookout-for-vision/blob/main/edge/install_
 iam role should have access to s3
 s3:GetObject
 
+In greengrass/component artifacts
+Before running any scripts, in your terminal type:
+pip install -r requirements.txt
+Scripts:
+anomaly_picam: this script runs the main function that calls to take a picture with the picam and run inference. This is the script to run for the demo
+In the terminal: python anomaly_picam
+
+anomaly_webcam: test script to run on your laptop. Calls to take a picture with your webam and run inference
+In the terminal: python anomaly_webcam
+
