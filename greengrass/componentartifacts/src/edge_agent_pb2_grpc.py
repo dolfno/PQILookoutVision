@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import edge_agent_pb2 as edge__agent__pb2
+import src.edge_agent_pb2 as edge__agent__pb2
 
 
 class EdgeAgentStub(object):
