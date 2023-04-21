@@ -9,8 +9,8 @@ from PIL import Image
 
 def add_text_overlay(img, response):
     """If anomaly show text in red otherwise in green"""
-    anomaly = response["DetectAnomalyResult"]["IsAnomalous"]
-    confscore = response["DetectAnomalyResult"]["Confidence"]
+    anomaly = response.detect_anomaly_result.is_anomalous
+    confscore = response.detect_anomaly_result.confidence
     if anomaly:
         color = (0, 0, 255)
         text = "Anomaly Detected"

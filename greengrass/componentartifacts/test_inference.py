@@ -1,15 +1,16 @@
 import json
 import time as t
 
-import edge_agent_pb2 as pb2
+import src.edge_agent_pb2 as pb2
 # import cv2
 import grpc
 import numpy as np
 from awscrt import io, mqtt
 from awsiot import mqtt_connection_builder
-from edge_agent_pb2_grpc import EdgeAgentStub
+from src.edge_agent_pb2_grpc import EdgeAgentStub
 from picamera2 import Picamera2
 from PIL import Image
+from src.logger import log
 
 ENDPOINT = "a1t2xj7x9iehh6-ats.iot.eu-west-1.amazonaws.com"
 CLIENT_ID = "PQICore"
@@ -21,6 +22,7 @@ MODEL_COMPONENT = "tobe"
 
 def detect_anomalies(img, channel):
     stub = EdgeAgentStub(channel)
+    print("channel set")
     h, w, c = img.shape
     print("shape=" + str(img.shape))
     response = stub.DetectAnomalies(
@@ -63,6 +65,7 @@ def connect_mqtt():
 def publish_mqtt_message(mqtt_connection, response):
     # Publish message to server desired number of times.
     print("Begin Publish")
+    print(response)
     data = "{} [{}]".format(str(response), 1)
     message = {"message": data, "is_anomalous": response.detect_anomaly_result.is_anomalous}
     mqtt_connection.publish(topic=TOPIC, payload=json.dumps(message), qos=mqtt.QoS.AT_LEAST_ONCE)
@@ -83,10 +86,10 @@ with grpc.insecure_channel("unix:///tmp/aws.iot.lookoutvision.EdgeAgent.sock") a
     picam2.start()
     im = picam2.capture_array()
     img = Image.fromarray(np.uint8(im))
-    # img.show()
+    img.show()
 
     mqtt_connection = connect_mqtt()
-    response = detect_anomalies(img, channel)
+    response = detect_anomalies(im, channel)
     publish_mqtt_message(mqtt_connection, response)
     disconnect_mqtt(mqtt_connection)
 
@@ -98,16 +101,16 @@ with grpc.insecure_channel("unix:///tmp/aws.iot.lookoutvision.EdgeAgent.sock") a
 
 
 # def main():
-#     picam2 = Picamera2()
-#     camera_config = picam2.create_preview_configuration()
-#     picam2.configure(camera_config)
-#     picam2.start()
-#     im = picam2.capture_array()
-#     img = Image.fromarray(np.uint8(im))
-#     img.show()
+    # picam2 = Picamera2()
+    # camera_config = picam2.create_preview_configuration()
+    # picam2.configure(camera_config)
+    # picam2.start()
+    # im = picam2.capture_array()
+    # img = Image.fromarray(np.uint8(im))
+    # img.show()
 
 # if __name__ == "__main__":
-#     main()
+    # main()
 
 def store_image_metadata(image_name, response):
     with open(f"{image_name}.json", "w") as outfile:
